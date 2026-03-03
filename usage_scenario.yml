@@ -1,0 +1,45 @@
+---
+name: Playwright Speedometer Benchmark
+author: Didi <didi@green-coding.io>
+description: Runs the Speedometer 3.1 benchmark via Playwright in a headless/ headfull Firefox and Chrome browser.
+
+services:
+  playwright-runner:
+    image: python:3.12-slim
+    setup-commands:
+      - command: pip install playwright
+      - command: playwright install firefox chrome --with-deps
+    volumes:
+      - .:/app
+    environment:
+      # If you have multiple displays please change this to the entry you want under /tmp/X11-unix
+      DISPLAY: ":0"
+
+flow:
+  - name: Run Speedometer 3.1 Firefox Headless
+    container: playwright-runner
+    commands:
+      - type: console
+        command: python3 /app/run_speedometer.py --headless --browser firefox
+        note: Run Speedometer 3.1 benchmark in headless Firefox and output JSON score
+
+  - name: Run Speedometer 3.1 Firefox Headfull
+    container: playwright-runner
+    commands:
+      - type: console
+        command: python3 /app/run_speedometer.py --headful --browser firefox
+        note: Run Speedometer 3.1 benchmark in headful Firefox and output JSON score
+
+  - name: Run Speedometer 3.1 Chrome Headless
+    container: playwright-runner
+    commands:
+      - type: console
+        command: python3 /app/run_speedometer.py --headless --browser chrome
+        note: Run Speedometer 3.1 benchmark in headless Chrome and output JSON score
+
+  - name: Run Speedometer 3.1 Chrome Headfull
+    container: playwright-runner
+    commands:
+      - type: console
+        command: python3 /app/run_speedometer.py --headful --browser chrome
+        note: Run Speedometer 3.1 benchmark in headful Chrome and output JSON score
