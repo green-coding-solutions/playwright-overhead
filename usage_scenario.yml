@@ -4,6 +4,9 @@ author: Didi <didi@green-coding.io>
 description: Runs the Speedometer 3.1 benchmark via Playwright in a headless/ headfull Firefox and Chrome browser.
 
 services:
+  speedtest:
+    image: ribalba/speedometer:4.0.0-alpha
+
   playwright-runner:
     image: python:3.12-slim
     setup-commands:
@@ -20,26 +23,26 @@ flow:
     container: playwright-runner
     commands:
       - type: console
-        command: python3 /app/run_speedometer.py --headless --browser firefox
+        command: python3 /app/run_speedometer.py --headless --browser firefox --url http://speedtest
         note: Run Speedometer 3.1 benchmark in headless Firefox and output JSON score
 
   - name: Run Speedometer 3.1 Firefox Headfull
     container: playwright-runner
     commands:
       - type: console
-        command: python3 /app/run_speedometer.py --headful --browser firefox
+        command: python3 /app/run_speedometer.py --headful --browser firefox --url http://speedtest
         note: Run Speedometer 3.1 benchmark in headful Firefox and output JSON score
 
   - name: Run Speedometer 3.1 Chrome Headless
     container: playwright-runner
     commands:
       - type: console
-        command: python3 /app/run_speedometer.py --headless --browser chrome
+        command: python3 /app/run_speedometer.py --headless --browser chrome --url http://speedtest
         note: Run Speedometer 3.1 benchmark in headless Chrome and output JSON score
 
   - name: Run Speedometer 3.1 Chrome Headfull
     container: playwright-runner
     commands:
       - type: console
-        command: python3 /app/run_speedometer.py --headful --browser chrome
+        command: python3 /app/run_speedometer.py --headful --browser chrome --url http://speedtest
         note: Run Speedometer 3.1 benchmark in headful Chrome and output JSON score
