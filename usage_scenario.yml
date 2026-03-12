@@ -8,41 +8,38 @@ services:
     image: ribalba/speedometer:4.0.0-alpha
 
   playwright-runner:
-    image: python:3.12-slim
-    setup-commands:
-      - command: pip install playwright
-      - command: playwright install firefox chrome --with-deps
+    image: greencoding/gcb_playwright:v21
     volumes:
-      - .:/app
+      - /tmp/.X11-unix:/tmp/.X11-unix # for debugging in non-headless mode
     environment:
-      # If you have multiple displays please change this to the entry you want under /tmp/X11-unix
-      DISPLAY: ":0"
+       DISPLAY: ":0" # for debugging in non-headless mode
+    command: [ "tail", "-f", "/dev/null" ]   # keep container running
 
 flow:
   - name: Run Speedometer 3.1 Firefox Headless
     container: playwright-runner
     commands:
       - type: console
-        command: python3 /app/run_speedometer.py --headless --browser firefox --url http://speedtest
+        command: python3 /tmp/repo/run_speedometer.py --headless --browser firefox --url http://speedtest
         note: Run Speedometer 3.1 benchmark in headless Firefox and output JSON score
 
   - name: Run Speedometer 3.1 Firefox Headfull
     container: playwright-runner
     commands:
       - type: console
-        command: python3 /app/run_speedometer.py --headful --browser firefox --url http://speedtest
+        command: python3 /tmp/repo/run_speedometer.py --headful --browser firefox --url http://speedtest
         note: Run Speedometer 3.1 benchmark in headful Firefox and output JSON score
 
   - name: Run Speedometer 3.1 Chrome Headless
     container: playwright-runner
     commands:
       - type: console
-        command: python3 /app/run_speedometer.py --headless --browser chrome --url http://speedtest
+        command: python3 /tmp/repo/run_speedometer.py --headless --browser chromium --url http://speedtest
         note: Run Speedometer 3.1 benchmark in headless Chrome and output JSON score
 
   - name: Run Speedometer 3.1 Chrome Headfull
     container: playwright-runner
     commands:
       - type: console
-        command: python3 /app/run_speedometer.py --headful --browser chrome --url http://speedtest
+        command: python3 /tmp/repo/run_speedometer.py --headful --browser chromium --url http://speedtest
         note: Run Speedometer 3.1 benchmark in headful Chrome and output JSON score
